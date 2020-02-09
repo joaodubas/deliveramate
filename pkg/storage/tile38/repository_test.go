@@ -123,61 +123,92 @@ func TestAddPartner(t *testing.T) {
 }
 
 func TestGetPartnerByID(t *testing.T) {
+	partners := []storage.Partner{
+		storage.Partner{
+			ID:          10,
+			TradingName: "Sample 10",
+			OwnerName:   "Owner 10",
+			Document:    "00.000.000/0000-11",
+			CoverageArea: geojson.Geometry{
+				Type: geojson.GeometryMultiPolygon,
+				MultiPolygon: [][][][]float64{{{
+					{-46.719199419021606, -23.53602551417083},
+					{-46.71830892562866, -23.53492384448112},
+					{-46.718287467956536, -23.534628752819078},
+					{-46.719253063201904, -23.531874532054413},
+					{-46.71980023384094, -23.531500740507177},
+					{-46.72041177749634, -23.531412210774658},
+					{-46.72041177749634, -23.53323197663715},
+					{-46.719199419021606, -23.53602551417083},
+				}}},
+			},
+			Address: geojson.Geometry{
+				Type:  geojson.GeometryPoint,
+				Point: []float64{-46.71938180923462, -23.53242538082001},
+			},
+		},
+		storage.Partner{
+			ID:          20,
+			TradingName: "Sample 20",
+			OwnerName:   "Owner 20",
+			Document:    "11.111.111/1111-11",
+			CoverageArea: geojson.Geometry{
+				Type: geojson.GeometryMultiPolygon,
+				MultiPolygon: [][][][]float64{{{
+					{-46.719199419021606, -23.53602551417083},
+					{-46.71830892562866, -23.53492384448112},
+					{-46.718287467956536, -23.534628752819078},
+					{-46.719253063201904, -23.531874532054413},
+					{-46.71980023384094, -23.531500740507177},
+					{-46.72041177749634, -23.531412210774658},
+					{-46.72041177749634, -23.53323197663715},
+					{-46.719199419021606, -23.53602551417083},
+				}}},
+			},
+			Address: geojson.Geometry{
+				Type:  geojson.GeometryPoint,
+				Point: []float64{-46.71938180923462, -23.53242538082001},
+			},
+		},
+	}
+
+	for _, p := range partners {
+		if _, err := s.AddPartner(p); err != nil {
+			t.Errorf("FilterPartnersByLocation: fail to add expected partner %v", p)
+		}
+	}
+
 	testCases := []struct {
-		name    string
-		partner storage.Partner
-		id      int
-		err     error
+		name string
+		id   int
+		err  error
 	}{
 		{
-			"success",
-			storage.Partner{
-				ID:          1,
-				TradingName: "Sample 1",
-				OwnerName:   "Owner 1",
-				Document:    "00.000.000/0000-11",
-				CoverageArea: geojson.Geometry{
-					Type: geojson.GeometryMultiPolygon,
-					MultiPolygon: [][][][]float64{{{
-						{-46.719199419021606, -23.53602551417083},
-						{-46.71830892562866, -23.53492384448112},
-						{-46.718287467956536, -23.534628752819078},
-						{-46.719253063201904, -23.531874532054413},
-						{-46.71980023384094, -23.531500740507177},
-						{-46.72041177749634, -23.531412210774658},
-						{-46.72041177749634, -23.53323197663715},
-						{-46.719199419021606, -23.53602551417083},
-					}}},
-				},
-				Address: geojson.Geometry{
-					Type:  geojson.GeometryPoint,
-					Point: []float64{-46.71938180923462, -23.53242538082001},
-				},
-			},
-			1,
+			"success id 10",
+			10,
 			nil,
+		},
+		{
+			"success id 20",
+			20,
+			nil,
+		},
+		{
+			"not found",
+			30,
+			storage.ErrorNotFound,
 		},
 	}
 
 	for _, d := range testCases {
 		t.Run(d.name, func(t *testing.T) {
-			if _, err := s.AddPartner(d.partner); err != nil {
-				t.Errorf("AddPartner: should not fail %v", err)
-			}
-			if p, err := s.GetPartnerByID(d.partner.ID); err != nil {
+			p, err := s.GetPartnerByID(d.id)
+			if err != nil && d.err == nil {
 				t.Errorf("GetPartnerByID: should not fail %v", err)
-			} else if p.ID != d.partner.ID {
-				t.Errorf("GetPartnerByID: ID expected %d | got %d", d.partner.ID, p.ID)
-			} else if p.Document != d.partner.Document {
-				t.Errorf("GetPartnerByID: Document expected %s | got %s", d.partner.Document, p.Document)
-			} else if p.TradingName != d.partner.TradingName {
-				t.Errorf("GetPartnerByID: TradingName expected %s | got %s", d.partner.TradingName, p.TradingName)
-			} else if p.OwnerName != d.partner.OwnerName {
-				t.Errorf("GetPartnerByID: OwnerName expected %s | got %s", d.partner.OwnerName, p.OwnerName)
-			} else if !p.Address.IsPoint() {
-				t.Errorf("GetPartnerByID: Address should be point\n%v\n%v", d.partner.Address, p.Address)
-			} else if !p.CoverageArea.IsMultiPolygon() {
-				t.Errorf("GetPartnerByID: CoverageArea should be multipolygon \n%v\n%v", d.partner.CoverageArea, p.CoverageArea)
+			} else if err != nil && !errors.Is(err, d.err) {
+				t.Errorf("GetPartnerByID: expected error %v | got error %v", d.err, err)
+			} else if d.err == nil && p.ID != d.id {
+				t.Errorf("GetPartnerByID: ID expected %d | got %d", d.id, p.ID)
 			}
 		})
 	}
@@ -188,9 +219,9 @@ func TestGetPartnerByID(t *testing.T) {
 func TestFilterPartnersByLocation(t *testing.T) {
 	partners := []storage.Partner{
 		storage.Partner{
-			ID:          10,
-			TradingName: "Sample 10",
-			OwnerName:   "Owner 10",
+			ID:          100,
+			TradingName: "Sample 100",
+			OwnerName:   "Owner 100",
 			Document:    "00.000.000/0000-22",
 			CoverageArea: geojson.Geometry{
 				Type: geojson.GeometryMultiPolygon,
@@ -208,9 +239,9 @@ func TestFilterPartnersByLocation(t *testing.T) {
 			},
 		},
 		storage.Partner{
-			ID:          20,
-			TradingName: "Sample 20",
-			OwnerName:   "Owner 20",
+			ID:          200,
+			TradingName: "Sample 200",
+			OwnerName:   "Owner 200",
 			Document:    "11.111.111/1111-22",
 			CoverageArea: geojson.Geometry{
 				Type: geojson.GeometryMultiPolygon,
@@ -228,9 +259,9 @@ func TestFilterPartnersByLocation(t *testing.T) {
 			},
 		},
 		storage.Partner{
-			ID:          30,
-			TradingName: "Sample 30",
-			OwnerName:   "Owner 30",
+			ID:          300,
+			TradingName: "Sample 300",
+			OwnerName:   "Owner 300",
 			Document:    "22.222.222/2222-22",
 			CoverageArea: geojson.Geometry{
 				Type: geojson.GeometryMultiPolygon,
@@ -248,9 +279,9 @@ func TestFilterPartnersByLocation(t *testing.T) {
 			},
 		},
 		storage.Partner{
-			ID:          40,
-			TradingName: "Sample 40",
-			OwnerName:   "Owner 40",
+			ID:          400,
+			TradingName: "Sample 400",
+			OwnerName:   "Owner 400",
 			Document:    "33.333.333/3333-22",
 			CoverageArea: geojson.Geometry{
 				Type: geojson.GeometryMultiPolygon,

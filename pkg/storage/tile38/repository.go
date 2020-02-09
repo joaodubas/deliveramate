@@ -2,6 +2,7 @@ package tile38
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/go-redis/redis/v7"
@@ -43,7 +44,10 @@ func (s *Storage) GetPartnerByID(id int) (storage.Partner, error) {
 	jgetID, _ := commander(s.db, "JGET", "partner:id:document", id)
 	r, err := jgetID.Result()
 	if err != nil {
-		return storage.Partner{}, err
+		if errors.Is(err, redis.Nil) {
+			return storage.Partner{}, fmt.Errorf("GetPartnerByID: error fetching partner (%w)", storage.ErrorNotFound)
+		}
+		return storage.Partner{}, fmt.Errorf("GetPartnerID: error fetching ID (%w)", err)
 	}
 
 	var d map[string]string
