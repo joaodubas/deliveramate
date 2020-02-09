@@ -2,18 +2,11 @@ package tile38
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/go-redis/redis/v7"
 	"github.com/joaodubas/deliveramate/pkg/storage"
 	geojson "github.com/paulmach/go.geojson"
-)
-
-var (
-	ErrorDuplicateID       = errors.New("duplicated id")
-	ErrorDuplicateDocument = errors.New("duplicated document")
-	ErrorWrongAddress      = errors.New("wrong type for address")
 )
 
 type Storage struct {
@@ -32,11 +25,11 @@ func NewStorage() (*Storage, error) {
 
 func (s *Storage) AddPartner(p storage.Partner) (storage.Partner, error) {
 	if s.existingPartnerID(p.ID) {
-		return p, fmt.Errorf("AddPartner: error id already saved (%w)", ErrorDuplicateID)
+		return p, fmt.Errorf("AddPartner: error id already saved (%w)", storage.ErrorDuplicateID)
 	}
 
 	if s.existingPartnerDocument(p.Document) {
-		return p, fmt.Errorf("AddPartner: error document already saved (%w)", ErrorDuplicateDocument)
+		return p, fmt.Errorf("AddPartner: error document already saved (%w)", storage.ErrorDuplicateDocument)
 	}
 
 	if _, err := s.set(p); err != nil {
@@ -62,7 +55,7 @@ func (s *Storage) GetPartnerByID(id int) (storage.Partner, error) {
 func (s *Storage) FilterPartnersByLocation(point geojson.Geometry) ([]storage.Partner, error) {
 	var ps []storage.Partner
 	if !point.IsPoint() {
-		return ps, fmt.Errorf("FilterPartnersByLocation: wrong type for point (%w)", ErrorWrongAddress)
+		return ps, fmt.Errorf("FilterPartnersByLocation: wrong type for point (%w)", storage.ErrorWrongAddress)
 	}
 
 	p, err := point.MarshalJSON()

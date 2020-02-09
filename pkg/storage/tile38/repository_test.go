@@ -71,7 +71,7 @@ func TestAddPartner(t *testing.T) {
 					Point: []float64{-46.71938180923462, -23.53242538082001},
 				},
 			},
-			ErrorDuplicateID,
+			storage.ErrorDuplicateID,
 			0,
 		},
 		{
@@ -99,7 +99,7 @@ func TestAddPartner(t *testing.T) {
 					Point: []float64{-46.71938180923462, -23.53242538082001},
 				},
 			},
-			ErrorDuplicateDocument,
+			storage.ErrorDuplicateDocument,
 			0,
 		},
 	}
@@ -306,7 +306,7 @@ func TestFilterPartnersByLocation(t *testing.T) {
 				{-46.718266010284424, -23.531333517629083},
 			}}),
 			0,
-			ErrorWrongAddress,
+			storage.ErrorWrongAddress,
 		},
 	}
 	for _, d := range testCases {
