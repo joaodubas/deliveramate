@@ -1,4 +1,4 @@
-package tile38
+package storage
 
 import geojson "github.com/paulmach/go.geojson"
 

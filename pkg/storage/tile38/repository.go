@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/joaodubas/deliveramate/pkg/storage"
 	geojson "github.com/paulmach/go.geojson"
 )
 
@@ -29,7 +30,7 @@ func NewStorage() (*Storage, error) {
 	return s, nil
 }
 
-func (s *Storage) AddPartner(p Partner) (Partner, error) {
+func (s *Storage) AddPartner(p storage.Partner) (storage.Partner, error) {
 	if s.existingPartnerID(p.ID) {
 		return p, fmt.Errorf("AddPartner: error id already saved (%w)", ErrorDuplicateID)
 	}
@@ -45,11 +46,11 @@ func (s *Storage) AddPartner(p Partner) (Partner, error) {
 	return p, nil
 }
 
-func (s *Storage) GetPartnerByID(id int) (Partner, error) {
+func (s *Storage) GetPartnerByID(id int) (storage.Partner, error) {
 	jgetID, _ := commander(s.db, "JGET", "partner:id:document", id)
 	r, err := jgetID.Result()
 	if err != nil {
-		return Partner{}, err
+		return storage.Partner{}, err
 	}
 
 	var d map[string]string
@@ -58,8 +59,8 @@ func (s *Storage) GetPartnerByID(id int) (Partner, error) {
 	return s.getPartnerByDocument(d["document"])
 }
 
-func (s *Storage) FilterPartnersByLocation(point geojson.Geometry) ([]Partner, error) {
-	var ps []Partner
+func (s *Storage) FilterPartnersByLocation(point geojson.Geometry) ([]storage.Partner, error) {
+	var ps []storage.Partner
 	if !point.IsPoint() {
 		return ps, fmt.Errorf("FilterPartnersByLocation: wrong type for point (%w)", ErrorWrongAddress)
 	}
@@ -111,12 +112,12 @@ func (s *Storage) existingPartnerDocument(document string) bool {
 	}
 }
 
-func (s *Storage) getPartnerByDocument(doc string) (Partner, error) {
+func (s *Storage) getPartnerByDocument(doc string) (storage.Partner, error) {
 	jgetPartner, _ := commander(s.db, "JGET", "partner", doc)
 	getAddress, _ := commander(s.db, "GET", "partner:address", doc)
 	getCoverage, _ := commander(s.db, "GET", "partner:coverage", doc)
 
-	p := Partner{}
+	p := storage.Partner{}
 	r, err := jgetPartner.Result()
 	if err != nil {
 		return p, err
@@ -143,7 +144,7 @@ func (s *Storage) getPartnerByDocument(doc string) (Partner, error) {
 	return p, nil
 }
 
-func (s *Storage) set(p Partner) (Partner, error) {
+func (s *Storage) set(p storage.Partner) (storage.Partner, error) {
 	jsetID, _ := commander(s.db, "JSET", "partner:id:document", p.ID, "document", p.Document)
 	jsetDocument, _ := commander(s.db, "JSET", "partner:document:id", p.Document, "id", p.ID)
 	jsetPartnerID, _ := commander(s.db, "JSET", "partner", p.Document, "id", p.ID)

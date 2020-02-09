@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/joaodubas/deliveramate/pkg/storage"
 	geojson "github.com/paulmach/go.geojson"
 )
 
@@ -13,13 +14,13 @@ var s, _ = NewStorage()
 func TestAddPartner(t *testing.T) {
 	testCases := []struct {
 		name    string
-		partner Partner
+		partner storage.Partner
 		err     error
 		id      int
 	}{
 		{
 			"AddPartner success",
-			Partner{
+			storage.Partner{
 				ID:          1,
 				TradingName: "Sample 1",
 				OwnerName:   "Owner 1",
@@ -47,7 +48,7 @@ func TestAddPartner(t *testing.T) {
 		},
 		{
 			"AddPartner failure: duplicate id",
-			Partner{
+			storage.Partner{
 				ID:          1,
 				TradingName: "Repeat 1",
 				OwnerName:   "Repeat 1",
@@ -75,7 +76,7 @@ func TestAddPartner(t *testing.T) {
 		},
 		{
 			"AddPartner failure: duplicate document",
-			Partner{
+			storage.Partner{
 				ID:          2,
 				TradingName: "Repeat 2",
 				OwnerName:   "Repeat 2",
@@ -124,13 +125,13 @@ func TestAddPartner(t *testing.T) {
 func TestGetPartnerByID(t *testing.T) {
 	testCases := []struct {
 		name    string
-		partner Partner
+		partner storage.Partner
 		id      int
 		err     error
 	}{
 		{
 			"success",
-			Partner{
+			storage.Partner{
 				ID:          1,
 				TradingName: "Sample 1",
 				OwnerName:   "Owner 1",
@@ -185,8 +186,8 @@ func TestGetPartnerByID(t *testing.T) {
 }
 
 func TestFilterPartnersByLocation(t *testing.T) {
-	partners := []Partner{
-		Partner{
+	partners := []storage.Partner{
+		storage.Partner{
 			ID:          10,
 			TradingName: "Sample 10",
 			OwnerName:   "Owner 10",
@@ -206,7 +207,7 @@ func TestFilterPartnersByLocation(t *testing.T) {
 				Point: []float64{-46.71938180923462, -23.53242538082001},
 			},
 		},
-		Partner{
+		storage.Partner{
 			ID:          20,
 			TradingName: "Sample 20",
 			OwnerName:   "Owner 20",
@@ -226,10 +227,10 @@ func TestFilterPartnersByLocation(t *testing.T) {
 				Point: []float64{-46.71938180923462, -23.53242538082001},
 			},
 		},
-		Partner{
-			ID:          3,
-			TradingName: "Sample 3",
-			OwnerName:   "Owner 3",
+		storage.Partner{
+			ID:          30,
+			TradingName: "Sample 30",
+			OwnerName:   "Owner 30",
 			Document:    "22.222.222/2222-22",
 			CoverageArea: geojson.Geometry{
 				Type: geojson.GeometryMultiPolygon,
@@ -246,10 +247,10 @@ func TestFilterPartnersByLocation(t *testing.T) {
 				Point: []float64{-46.71938180923462, -23.53242538082001},
 			},
 		},
-		Partner{
-			ID:          4,
-			TradingName: "Sample 4",
-			OwnerName:   "Owner 4",
+		storage.Partner{
+			ID:          40,
+			TradingName: "Sample 40",
+			OwnerName:   "Owner 40",
 			Document:    "33.333.333/3333-22",
 			CoverageArea: geojson.Geometry{
 				Type: geojson.GeometryMultiPolygon,
