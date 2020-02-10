@@ -1,0 +1,18 @@
+---
+version: '3.7'
+services:
+  db:
+    image: 'tile38/tile38:1.19.3'
+    volumes:
+      - 'db_data:/data'
+  app:
+    image: 'golang:1.13.6'
+    volumes:
+      - 'go_data:/go'
+      - '/opt/personal/deliveramate:/go/src/github.com/joaodubas/deliveramate'
+    working_dir: '/go/src/github.com/joaodubas/deliveramate'
+    entrypoint: sleep
+    command: infinity
+volumes:
+  db_data: {}
+  go_data: {}
