@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package v1;
+
+message Partner {
+	int64 id = 1;
+	string trading_name = 2;
+	string owner_name = 3;
+	string document = 4;
+	bytes coverage_area = 5;
+	bytes address = 6;
+}
+
+message CreateRequest {
+  string api = 1;
+  Partner partner = 2;
+}
+
+message CreateResponse {
+  string api = 1;
+  Partner partner = 2;
+}
+
+message GetRequest {
+  string api = 1;
+  int64 id = 2;
+}
+
+message GetResponse {
+  string api = 1;
+  Partner partner = 2;
+}
+
+message FilterLocationRequest {
+  string api = 1;
+  double lat = 2;
+  double lng = 3;
+}
+
+message FilterLocationResponse {
+  string api = 1;
+  repeated Partner partners = 2;
+}
+
+service PartnerService {
+  rpc CreatePartner(CreateRequest) returns (CreateResponse);
+  rpc GetPartner(GetRequest) returns (GetResponse);
+  rpc FilterPartnerByLocation(FilterLocationRequest) returns (FilterLocationResponse);
+}
