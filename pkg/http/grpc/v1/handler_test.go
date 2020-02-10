@@ -142,7 +142,41 @@ func TestGetPartner(t *testing.T) {
 }
 
 func TestFilterPartnerByLocation(t *testing.T) {
+	testCases := []struct {
+		name   string
+		lat    float64
+		lng    float64
+		length int
+		err    error
+	}{
+		{
+			"success",
+			10.0,
+			10.0,
+			2,
+			nil,
+		},
+	}
 
+	for _, d := range testCases {
+		t.Run(d.name, func(t *testing.T) {
+			resp, err := srv.FilterPartnerByLocation(
+				context.TODO(),
+				&FilterLocationRequest{
+					Api: "v1",
+					Lat: d.lat,
+					Lng: d.lng,
+				},
+			)
+			if d.err != nil && err == nil {
+				t.Errorf("FilterPartnerByLocation: should've failed for point %.2f, %.2f", d.lat, d.lng)
+			} else if d.err != nil && !errors.Is(err, d.err) {
+				t.Errorf("FilterPartnerByLocation: expected error %v | got error %v", d.err, err)
+			} else if d.err == nil && len(resp.Partners) != d.length {
+				t.Errorf("FilterPartnerByLocation: expected %d partners | got %d partner", d.length, len(resp.Partners))
+			}
+		})
+	}
 }
 
 var srv = NewService(adding.NewService(&repo{}), listing.NewService(&repo{}))
@@ -180,5 +214,52 @@ func (r *repo) GetPartnerByID(id int) (storage.Partner, error) {
 }
 
 func (r *repo) FilterPartnerByLocation(p geojson.Geometry) ([]storage.Partner, error) {
-	return []storage.Partner{}, nil
+	ps := []storage.Partner{}
+	if !p.IsPoint() {
+		return ps, storage.ErrorWrongAddress
+	}
+	ps = append(
+		ps,
+		storage.Partner{
+			ID:          10,
+			TradingName: "Sample 10",
+			OwnerName:   "Sample 10",
+			Document:    "00.000.000/0000-00",
+			CoverageArea: geojson.Geometry{
+				Type: geojson.GeometryMultiPolygon,
+				MultiPolygon: [][][][]float64{{{
+					{-46.72017574310303, -23.531776165960732},
+					{-46.71886682510376, -23.531776165960732},
+					{-46.71886682510376, -23.530644950597658},
+					{-46.72017574310303, -23.530644950597658},
+					{-46.72017574310303, -23.531776165960732},
+				}}},
+			},
+			Address: geojson.Geometry{
+				Type:  geojson.GeometryPoint,
+				Point: []float64{-46.719521284103394, -23.530999071235296},
+			},
+		},
+		storage.Partner{
+			ID:          20,
+			TradingName: "Sample 20",
+			OwnerName:   "Sample 20",
+			Document:    "11.111.111/1111-00",
+			CoverageArea: geojson.Geometry{
+				Type: geojson.GeometryMultiPolygon,
+				MultiPolygon: [][][][]float64{{{
+					{-46.72017574310303, -23.531776165960732},
+					{-46.71886682510376, -23.531776165960732},
+					{-46.71886682510376, -23.530644950597658},
+					{-46.72017574310303, -23.530644950597658},
+					{-46.72017574310303, -23.531776165960732},
+				}}},
+			},
+			Address: geojson.Geometry{
+				Type:  geojson.GeometryPoint,
+				Point: []float64{-46.719521284103394, -23.530999071235296},
+			},
+		},
+	)
+	return ps, nil
 }

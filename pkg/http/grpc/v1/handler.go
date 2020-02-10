@@ -5,6 +5,7 @@ import (
 
 	"github.com/joaodubas/deliveramate/pkg/adding"
 	"github.com/joaodubas/deliveramate/pkg/listing"
+	geojson "github.com/paulmach/go.geojson"
 )
 
 type service struct {
@@ -50,5 +51,20 @@ func (s *service) GetPartner(ctx context.Context, r *GetRequest) (*GetResponse, 
 }
 
 func (s *service) FilterPartnerByLocation(ctx context.Context, r *FilterLocationRequest) (*FilterLocationResponse, error) {
-	return &FilterLocationResponse{}, nil
+	point := geojson.NewPointGeometry([]float64{r.GetLng(), r.GetLat()})
+	storagePartners, err := s.lister.FilterPartnerByLocation(*point)
+	if err != nil {
+		return &FilterLocationResponse{Api: r.GetApi(), Partners: []*Partner{}}, err
+	}
+
+	partners := []*Partner{}
+	for _, sp := range storagePartners {
+		p, err := fromStoragePartner(sp)
+		if err != nil {
+			return &FilterLocationResponse{Api: r.GetApi(), Partners: partners}, err
+		}
+		partners = append(partners, p)
+	}
+
+	return &FilterLocationResponse{Api: r.GetApi(), Partners: partners}, nil
 }
