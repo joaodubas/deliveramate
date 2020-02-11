@@ -25,6 +25,12 @@ func NewStorage() (*Storage, error) {
 }
 
 func (s *Storage) AddPartner(p storage.Partner) (storage.Partner, error) {
+	doc, err := storage.DocumentFormatter(p.Document)
+	if err != nil {
+		return p, fmt.Errorf("AddPartner: error invalid document (%w)", err)
+	}
+	p.Document = doc
+
 	if s.existingPartnerID(p.ID) {
 		return p, fmt.Errorf("AddPartner: error id already saved (%w)", storage.ErrorDuplicateID)
 	}

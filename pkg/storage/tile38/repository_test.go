@@ -173,8 +173,8 @@ func TestGetPartnerByID(t *testing.T) {
 	}
 
 	for _, p := range partners {
-		if _, err := s.AddPartner(p); err != nil {
-			t.Errorf("FilterPartnersByLocation: fail to add expected partner %v", p)
+		if p, err := s.AddPartner(p); err != nil {
+			t.Errorf("GetPartnerByID: fail to add expected partner %v", p)
 		}
 	}
 
