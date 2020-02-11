@@ -20,7 +20,11 @@ func NewPartner(id int, tradingName, ownerName, document string, coverageArea, a
 		ID:          id,
 		TradingName: tradingName,
 		OwnerName:   ownerName,
-		Document:    document,
+	}
+
+	doc, err := DocumentFormatter(document)
+	if err != nil {
+		return p, fmt.Errorf("NewPartner: error formatting document (%w)", err)
 	}
 
 	coverageGeom, err := geojson.UnmarshalGeometry(coverageArea)
@@ -37,6 +41,7 @@ func NewPartner(id int, tradingName, ownerName, document string, coverageArea, a
 		return p, fmt.Errorf("NewPartner: invalid address (%w)", ErrorWrongAddress)
 	}
 
+	p.Document = doc
 	p.CoverageArea = *coverageGeom
 	p.Address = *addressGeom
 	return p, nil
