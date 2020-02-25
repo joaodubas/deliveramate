@@ -3,16 +3,29 @@ version: '3.7'
 services:
   db:
     image: 'tile38/tile38:1.19.3'
+    hostname: &db_host db
     volumes:
       - 'db_data:/data'
+  db_test:
+    image: 'tile38/tile38:1.19.3'
+    hostname: &db_test_host db_test
+    volumes:
+      - 'db_test_data:/data'
   app:
     image: 'golang:1.13.6'
+    hostname: app
     volumes:
       - 'go_data:/go'
-      - '/opt/personal/deliveramate:/go/src/github.com/joaodubas/deliveramate'
+      - './:/go/src/github.com/joaodubas/deliveramate'
+    environment:
+        DELIVERAMATE_DB_HOST: *db_host
+        DELIVERAMATE_DB_PORT: 9851
+        DELIVERAMATE_DB_TEST_HOST: *db_test_host
+        DELIVERAMATE_DB_TEST_PORT: 9851
     working_dir: '/go/src/github.com/joaodubas/deliveramate'
     entrypoint: sleep
     command: infinity
 volumes:
   db_data: {}
+  db_test_data: {}
   go_data: {}
