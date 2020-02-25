@@ -9,7 +9,7 @@ import (
 	geojson "github.com/paulmach/go.geojson"
 )
 
-var s, _ = NewStorage()
+var s, _ = NewStorage("db_test:9851")
 
 func TestAddPartner(t *testing.T) {
 	testCases := []struct {
@@ -45,6 +45,62 @@ func TestAddPartner(t *testing.T) {
 			},
 			nil,
 			1,
+		},
+		{
+			"AddPartner success: format cnpj document",
+			storage.Partner{
+				ID:          3,
+				TradingName: "Sample 3",
+				OwnerName:   "Owner 3",
+				Document:    "33333333333300",
+				CoverageArea: geojson.Geometry{
+					Type: geojson.GeometryMultiPolygon,
+					MultiPolygon: [][][][]float64{{{
+						{-46.719199419021606, -23.53602551417083},
+						{-46.71830892562866, -23.53492384448112},
+						{-46.718287467956536, -23.534628752819078},
+						{-46.719253063201904, -23.531874532054413},
+						{-46.71980023384094, -23.531500740507177},
+						{-46.72041177749634, -23.531412210774658},
+						{-46.72041177749634, -23.53323197663715},
+						{-46.719199419021606, -23.53602551417083},
+					}}},
+				},
+				Address: geojson.Geometry{
+					Type:  geojson.GeometryPoint,
+					Point: []float64{-46.71938180923462, -23.53242538082001},
+				},
+			},
+			nil,
+			3,
+		},
+		{
+			"AddPartner success: format cpf document",
+			storage.Partner{
+				ID:          4,
+				TradingName: "Sample 4",
+				OwnerName:   "Owner 4",
+				Document:    "44444444400",
+				CoverageArea: geojson.Geometry{
+					Type: geojson.GeometryMultiPolygon,
+					MultiPolygon: [][][][]float64{{{
+						{-46.719199419021606, -23.53602551417083},
+						{-46.71830892562866, -23.53492384448112},
+						{-46.718287467956536, -23.534628752819078},
+						{-46.719253063201904, -23.531874532054413},
+						{-46.71980023384094, -23.531500740507177},
+						{-46.72041177749634, -23.531412210774658},
+						{-46.72041177749634, -23.53323197663715},
+						{-46.719199419021606, -23.53602551417083},
+					}}},
+				},
+				Address: geojson.Geometry{
+					Type:  geojson.GeometryPoint,
+					Point: []float64{-46.71938180923462, -23.53242538082001},
+				},
+			},
+			nil,
+			4,
 		},
 		{
 			"AddPartner failure: duplicate id",

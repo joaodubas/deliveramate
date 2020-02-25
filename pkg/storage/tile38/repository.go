@@ -14,8 +14,8 @@ type Storage struct {
 	db *redis.Client
 }
 
-func NewStorage() (*Storage, error) {
-	cli := redis.NewClient(&redis.Options{Addr: "db:9851"})
+func NewStorage(address string) (*Storage, error) {
+	cli := redis.NewClient(&redis.Options{Addr: address})
 	if _, err := cli.Ping().Result(); err != nil {
 		return nil, fmt.Errorf("NewStorage: connection error: %w", err)
 	}
