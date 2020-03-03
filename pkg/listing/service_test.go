@@ -68,7 +68,7 @@ func TestFilterParnerByLocation(t *testing.T) {
 
 	for _, d := range testCases {
 		t.Run(d.name, func(t *testing.T) {
-			ps, err := s.FilterPartnerByLocation(d.point)
+			ps, err := s.FilterPartnersByLocation(d.point)
 			if d.err != nil && err == nil {
 				t.Errorf("FilterPartnerByLocation: should've failed for point %v", d.point)
 			} else if d.err != nil && !errors.Is(err, d.err) {
@@ -109,7 +109,7 @@ func (r *repository) GetPartnerByID(id int) (storage.Partner, error) {
 	}, nil
 }
 
-func (r *repository) FilterPartnerByLocation(point geojson.Geometry) ([]storage.Partner, error) {
+func (r *repository) FilterPartnersByLocation(point geojson.Geometry) ([]storage.Partner, error) {
 	ps := []storage.Partner{}
 
 	if !point.IsPoint() {

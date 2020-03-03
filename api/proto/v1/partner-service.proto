@@ -45,5 +45,5 @@ message FilterLocationResponse {
 service PartnerService {
   rpc CreatePartner(CreateRequest) returns (CreateResponse);
   rpc GetPartner(GetRequest) returns (GetResponse);
-  rpc FilterPartnerByLocation(FilterLocationRequest) returns (FilterLocationResponse);
+  rpc FilterPartnersByLocation(FilterLocationRequest) returns (FilterLocationResponse);
 }

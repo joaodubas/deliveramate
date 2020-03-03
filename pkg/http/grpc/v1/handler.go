@@ -50,9 +50,9 @@ func (s *service) GetPartner(ctx context.Context, r *GetRequest) (*GetResponse, 
 	return &GetResponse{Api: r.GetApi(), Partner: p}, nil
 }
 
-func (s *service) FilterPartnerByLocation(ctx context.Context, r *FilterLocationRequest) (*FilterLocationResponse, error) {
+func (s *service) FilterPartnersByLocation(ctx context.Context, r *FilterLocationRequest) (*FilterLocationResponse, error) {
 	point := geojson.NewPointGeometry([]float64{r.GetLng(), r.GetLat()})
-	storagePartners, err := s.lister.FilterPartnerByLocation(*point)
+	storagePartners, err := s.lister.FilterPartnersByLocation(*point)
 	if err != nil {
 		return &FilterLocationResponse{Api: r.GetApi(), Partners: []*Partner{}}, err
 	}

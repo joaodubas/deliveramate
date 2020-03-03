@@ -160,7 +160,7 @@ func TestFilterPartnerByLocation(t *testing.T) {
 
 	for _, d := range testCases {
 		t.Run(d.name, func(t *testing.T) {
-			resp, err := srv.FilterPartnerByLocation(
+			resp, err := srv.FilterPartnersByLocation(
 				context.TODO(),
 				&FilterLocationRequest{
 					Api: "v1",
@@ -213,7 +213,7 @@ func (r *repo) GetPartnerByID(id int) (storage.Partner, error) {
 	}, nil
 }
 
-func (r *repo) FilterPartnerByLocation(p geojson.Geometry) ([]storage.Partner, error) {
+func (r *repo) FilterPartnersByLocation(p geojson.Geometry) ([]storage.Partner, error) {
 	ps := []storage.Partner{}
 	if !p.IsPoint() {
 		return ps, storage.ErrorWrongAddress

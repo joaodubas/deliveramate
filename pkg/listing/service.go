@@ -7,12 +7,12 @@ import (
 
 type Repository interface {
 	GetPartnerByID(int) (storage.Partner, error)
-	FilterPartnerByLocation(geojson.Geometry) ([]storage.Partner, error)
+	FilterPartnersByLocation(geojson.Geometry) ([]storage.Partner, error)
 }
 
 type Service interface {
 	GetPartnerByID(int) (storage.Partner, error)
-	FilterPartnerByLocation(geojson.Geometry) ([]storage.Partner, error)
+	FilterPartnersByLocation(geojson.Geometry) ([]storage.Partner, error)
 }
 
 type service struct {
@@ -27,6 +27,6 @@ func (s *service) GetPartnerByID(id int) (storage.Partner, error) {
 	return s.repo.GetPartnerByID(id)
 }
 
-func (s *service) FilterPartnerByLocation(point geojson.Geometry) ([]storage.Partner, error) {
-	return s.repo.FilterPartnerByLocation(point)
+func (s *service) FilterPartnersByLocation(point geojson.Geometry) ([]storage.Partner, error) {
+	return s.repo.FilterPartnersByLocation(point)
 }
