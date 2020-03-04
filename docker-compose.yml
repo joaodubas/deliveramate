@@ -12,7 +12,9 @@ services:
     volumes:
       - 'db_test_data:/data'
   app:
-    image: 'golang:1.13.6'
+    image: 'joaodubas/deliveramate:0.0.1'
+    build:
+      context: .
     hostname: app
     volumes:
       - 'go_data:/go'
