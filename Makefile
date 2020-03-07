@@ -6,15 +6,16 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMG) get
 
 # binary names
-LOADER_NAME=deliveramate-loader
+BUILD_PATH=build
+LOADER_NAME=$(BUILD_PATH)/deliveramate-loader
 LOADER_UNIX=$(LOADER_NAME)-unix
 LOADER_WIN=$(LOADER_NAME).exe
 LOADER_OSX=$(LOADER_NAME)-darwin
-SERVER_NAME=deliveramate-server
+SERVER_NAME=$(BUILD_PATH)/deliveramate-server
 SERVER_UNIX=$(SERVER_NAME)-unix
 SERVER_WIN=$(SERVER_NAME).exe
 SERVER_OSX=$(SERVER_NAME)-darwin
-CLIENT_NAME=deliveramate-client
+CLIENT_NAME=$(BUILD_PATH)/deliveramate-client
 CLIENT_UNIX=$(CLIENT_NAME)-unix
 CLIENT_WIN=$(CLIENT_NAME).exe
 CLIENT_OSX=$(CLIENT_NAME)-darwin
