@@ -21,6 +21,10 @@ CLIENT_OSX=$(CLIENT_NAME)-darwin
 
 .DEFAULT_GOAL := help
 
+.PHONY: setup
+setup:  ## install application packages and copy proper protobuf files
+	$(GOCMD) mod download
+
 .PHONY: protoc-gen
 protoc-gen:  ## generate golang code based in protobuf files
 	mkdir -p pkg/http/grpc/v1
