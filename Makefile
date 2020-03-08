@@ -33,9 +33,22 @@ setup:  ## install application packages and copy proper protobuf files
 	cp $(GOMOD_PATH)/github.com/grpc-ecosystem/grpc-gateway\@v1.14.1/protoc-gen-swagger/options/openapiv2.proto third_party/protoc-gen-swagger/options
 
 .PHONY: protoc-gen
-protoc-gen:  ## generate golang code based in protobuf files
+protoc-gen: protoc-gen-grpc protoc-gen-gateway protoc-gen-openapi  ## generate golang code based in protobuf files
+
+.PHONY: protoc-gen-grpc
+protoc-gen-grpc:  ## generate golang grpc code based in protobuf files
 	mkdir -p pkg/http/grpc/v1
-	protoc -I=api/proto/v1 --go_out=plugins=grpc:pkg/http/grpc/v1 api/proto/v1/partner-service.proto
+	protoc -I=api/proto/v1 -I=third_party --go_out=plugins=grpc:pkg/http/grpc/v1 api/proto/v1/partner-service.proto
+
+.PHONY: protoc-gen-gateway
+protoc-gen-gateway:  ## generate golang http gateway code based in protobuf files
+	mkdir -p pkg/http/grpc/v1
+	protoc -I=api/proto/v1 -I=third_party --go_out=plugins=grpc:pkg/http/grpc/v1 --grpc-gateway_out=logtostderr=true:pkg/http/grpc/v1 api/proto/v1/partner-service.proto
+
+.PHONY: protoc-gen-openapi
+protoc-gen-openapi:  ## generate openapi spec based in protobuf files
+	mkdir -p api/openapi/v1
+	protoc -I=api/proto/v1 -I=third_party --swagger_out=logtostderr=true:api/openapi/v1 api/proto/v1/partner-service.proto
 
 .PHONY: test
 test:  ## execute tests
