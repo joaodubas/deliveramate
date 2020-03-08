@@ -2,6 +2,35 @@ syntax = "proto3";
 
 package v1;
 
+import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    title: "Deliveramate Partner Service";
+    version: "0.0.1";
+    contact: {
+      name: "deliveramate partner service";
+      url: "https://github.com/joaodubas/deliveramate";
+      email: "joao.dubas@gmail.com";
+    }
+  };
+  schemes: HTTP;
+  consumes: "application/json";
+  produces: "application/json";
+  responses: {
+    key: "404";
+    value: {
+      description: "Resource does not exist.";
+      schema: {
+        json_schema: {
+          type: STRING;
+        };
+      };
+    };
+  };
+};
+
 message Partner {
 	int64 id = 1;
 	string trading_name = 2;
@@ -43,7 +72,20 @@ message FilterLocationResponse {
 }
 
 service PartnerService {
-  rpc CreatePartner(CreateRequest) returns (CreateResponse);
-  rpc GetPartner(GetRequest) returns (GetResponse);
-  rpc FilterPartnersByLocation(FilterLocationRequest) returns (FilterLocationResponse);
+  rpc CreatePartner(CreateRequest) returns (CreateResponse) {
+    option (google.api.http) = {
+      post: "/v1/partner";
+      body: "*";
+    };
+  }
+  rpc GetPartner(GetRequest) returns (GetResponse) {
+    option (google.api.http) = {
+      get: "/v1/partner/{id}";
+    };
+  }
+  rpc FilterPartnersByLocation(FilterLocationRequest) returns (FilterLocationResponse) {
+    option (google.api.http) = {
+      get: "/v1/partner/location/{lat}/{lng}";
+    };
+  }
 }
