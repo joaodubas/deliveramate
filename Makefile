@@ -1,4 +1,5 @@
 # go parameters
+GOMOD_PATH=${GOPATH}/pkg/mod
 GOCMD=go
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
@@ -25,6 +26,11 @@ CLIENT_OSX=$(CLIENT_NAME)-darwin
 .PHONY: setup
 setup:  ## install application packages and copy proper protobuf files
 	$(GOCMD) mod download
+	cp --recursive /opt/src/protoc-3.11.4-linux-x86_64/include/google third_party
+	cp --recursive $(GOMOD_PATH)/github.com/grpc-ecosystem/grpc-gateway\@v1.14.1/third_party/googleapis/google third_party
+	mkdir -p third_party/protoc-gen-swagger/options
+	cp $(GOMOD_PATH)/github.com/grpc-ecosystem/grpc-gateway\@v1.14.1/protoc-gen-swagger/options/annotations.proto third_party/protoc-gen-swagger/options
+	cp $(GOMOD_PATH)/github.com/grpc-ecosystem/grpc-gateway\@v1.14.1/protoc-gen-swagger/options/openapiv2.proto third_party/protoc-gen-swagger/options
 
 .PHONY: protoc-gen
 protoc-gen:  ## generate golang code based in protobuf files
