@@ -7,7 +7,7 @@ import (
 	"os/signal"
 
 	"google.golang.org/grpc"
-  "google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/reflection"
 
 	"github.com/joaodubas/deliveramate/pkg/adding"
 	v1 "github.com/joaodubas/deliveramate/pkg/http/grpc/v1"
@@ -34,7 +34,7 @@ func main() {
 			listing.NewService(store),
 		),
 	)
-  reflection.Register(server)
+	reflection.Register(server)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
