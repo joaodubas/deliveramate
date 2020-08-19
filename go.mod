@@ -3,7 +3,7 @@ module github.com/joaodubas/deliveramate
 go 1.13
 
 require (
-	github.com/go-redis/redis/v7 v7.2.0
+	github.com/go-redis/redis/v7 v7.4.0
 	github.com/golang/protobuf v1.4.2
 	github.com/grpc-ecosystem/grpc-gateway v1.14.1
 	github.com/paulmach/go.geo v0.0.0-20180829195134-22b514266d33 // indirect
