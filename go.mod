@@ -10,7 +10,7 @@ require (
 	github.com/paulmach/go.geojson v1.4.0
 	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect
 	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 // indirect
-	google.golang.org/genproto v0.0.0-20200513103714-09dca8ec2884
-	google.golang.org/grpc v1.33.1
+	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
+	google.golang.org/grpc v1.33.2
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
