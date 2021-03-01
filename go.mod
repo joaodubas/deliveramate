@@ -9,6 +9,6 @@ require (
 	github.com/paulmach/go.geo v0.0.0-20180829195134-22b514266d33 // indirect
 	github.com/paulmach/go.geojson v1.4.0
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
-	google.golang.org/grpc v1.35.0
+	google.golang.org/grpc v1.36.0
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
