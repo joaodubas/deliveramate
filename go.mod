@@ -6,9 +6,8 @@ require (
 	github.com/go-redis/redis/v7 v7.4.0
 	github.com/golang/protobuf v1.5.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/paulmach/go.geo v0.0.0-20180829195134-22b514266d33 // indirect
 	github.com/paulmach/go.geojson v1.4.0
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
-	google.golang.org/grpc v1.37.0
+	google.golang.org/grpc v1.37.1
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
