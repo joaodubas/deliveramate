@@ -8,6 +8,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/paulmach/go.geojson v1.4.0
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
-	google.golang.org/grpc v1.39.0
+	google.golang.org/grpc v1.39.1
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
